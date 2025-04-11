@@ -25,19 +25,19 @@ end
 function M.setup()
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>zp",
+    "<leader>mp",
     "<cmd>lua require('neotify').play_pause()<CR>",
     { noremap = true, silent = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>zn",
+    "<leader>mn",
     "<cmd>lua require('neotify').next_track()<CR>",
     { noremap = true, silent = true }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>zb",
+    "<leader>mb",
     "<cmd>lua require('neotify').previous_track()<CR>",
     { noremap = true, silent = true }
   )
