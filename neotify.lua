@@ -105,7 +105,7 @@ function M.setup()
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>mu",
+    "<leader>mi",
     "<cmd>lua require('neotify').manual_update_notify()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Update Song Info" }
   )
