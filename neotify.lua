@@ -28,8 +28,10 @@ function M.update_display_info()
   local song_info = M.get_current_song_info()
   if song_info then
     current_string_status = "🎵 " .. song_info
+    vim.notify(current_string_status, vim.log.levels.INFO, { title = "Now Playing" })
   else
     current_string_status = ""
+    vim.notify("No Song Playing Currently", vim.log.levels.INFO, { title = "Now Playing" })
   end
 end
 
@@ -47,26 +49,28 @@ end
 function M.next_track()
   vim.notify("Skipping to Next Track", vim.log.levels.INFO, { title = "Neotify" })
   shell "playerctl --player=spotifyd next"
-  M.update_display_info()
+  vim.defer_fn(function() M.update_display_info() end, 1500)
 end
 
 function M.previous_track()
   vim.notify("Going to Previous Track", vim.log.levels.INFO, { title = "Neotify" })
   shell "playerctl --player=spotifyd previous"
-  M.update_display_info()
+  vim.defer_fn(function() M.update_display_info() end, 1500)
 end
 
 function M.track_loop_playlist()
   vim.notify("Looping the current playlist", vim.log.levels.INFO, { title = "Neotify" })
   shell "playerctl --player=spotifyd loop playlist"
-  M.update_display_info()
+  --M.update_display_info()
 end
 
 function M.cancel_loop_playlist()
   vim.notify("Looping Stopped", vim.log.levels.INFO, { title = "Neotify" })
   shell "playerctl --player=spotifyd loop none"
-  M.update_display_info()
+  --M.update_display_info()
 end
+
+function M.manual_update_notify() M.update_display_info() end
 
 function M.setup()
   vim.api.nvim_set_keymap(
@@ -99,8 +103,14 @@ function M.setup()
     "<cmd>lua require('neotify').cancel_loop_playlist()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Looping Ended" }
   )
-  M.update_display_info()
-  vim.notify("Neotify setup complete, Initial song info fetched.", vim.log.levels.INFO, { title = "Neotify" })
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>mu",
+    "<cmd>lua require('neotify').manual_update_notify()<CR>",
+    { noremap = true, silent = true, desc = "Neotify : Update Song Info" }
+  )
+  --M.update_display_info()
+  --vim.notify("Neotify setup complete, Initial song info fetched.", vim.log.levels.INFO, { title = "Neotify" })
 end
 
 return M
