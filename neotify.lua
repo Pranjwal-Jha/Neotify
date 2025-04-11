@@ -33,7 +33,10 @@ function M.update_display_info()
   end
 end
 
-function M.get_status_string() return current_string_status end
+function M.get_status_string()
+  print("--- Neotify: get_status_string() called, returning: '" .. current_string_status .. "' ---")
+  return current_string_status
+end
 
 function M.play_pause()
   vim.notify("Toggling Play/Pause", vim.log.levels.INFO, { title = "Neotify" })
@@ -50,6 +53,18 @@ end
 function M.previous_track()
   vim.notify("Going to Previous Track", vim.log.levels.INFO, { title = "Neotify" })
   shell "playerctl --player=spotifyd previous"
+  M.update_display_info()
+end
+
+function M.track_loop_playlist()
+  vim.notify("Looping the current playlist", vim.log.levels.INFO, { title = "Neotify" })
+  shell "playerctl --player=spotifyd loop playlist"
+  M.update_display_info()
+end
+
+function M.cancel_loop_playlist()
+  vim.notify("Looping Stopped", vim.log.levels.INFO, { title = "Neotify" })
+  shell "playerctl --player=spotifyd loop none"
   M.update_display_info()
 end
 
@@ -71,6 +86,18 @@ function M.setup()
     "<leader>mb",
     "<cmd>lua require('neotify').previous_track()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Previous" }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>ml",
+    "<cmd>lua require('neotify').track_loop_playlist()<CR>",
+    { noremap = true, silent = true, desc = "Neotify : Looping Playlist" }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>mc",
+    "<cmd>lua require('neotify').cancel_loop_playlist()<CR>",
+    { noremap = true, silent = true, desc = "Neotify : Looping Ended" }
   )
   M.update_display_info()
   vim.notify("Neotify setup complete, Initial song info fetched.", vim.log.levels.INFO, { title = "Neotify" })
