@@ -81,13 +81,13 @@ function M.setup()
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>mn",
+    "<leader>mk",
     "<cmd>lua require('neotify').next_track()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Next" }
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>mb",
+    "<leader>mj",
     "<cmd>lua require('neotify').previous_track()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Previous" }
   )
