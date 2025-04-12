@@ -118,11 +118,20 @@ return {
         -- ##### USER DEFINED CONFIG START #####--
 
         status.component.builder {
-          { provider = " Hello World " },
+          provider = function()
+            local song_info = neotify.get_current_song_info()
+            if song_info then
+              return "🎵 " .. song_info
+            else
+              return ""
+            end
+          end,
           hl = { fg = "lightblue", bold = true },
           padding = { left = 1, right = 1 },
           surround = { separator = "none", color = "file_info_bg" },
         },
+
+        -- ###### END OF USER DEFINE CONFIG ##### --
         -- add a component for the current diagnostics if it exists and use the right separator for the section
         status.component.diagnostics { surround = { separator = "right" } },
         -- add a component to display LSP clients, disable showing LSP progress, and use the right separator

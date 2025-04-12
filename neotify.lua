@@ -19,7 +19,7 @@ local function shell(cmd)
 end
 
 function M.get_current_song_info()
-  local cmd = "playerctl --player=spotifyd metadata --format '{{artist}} - {{title}}'"
+  local cmd = "playerctl --player=spotifyd metadata --format '{{title}} - {{artist}}'"
   local info = shell(cmd)
   return info
 end
