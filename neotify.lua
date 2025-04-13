@@ -70,6 +70,18 @@ function M.cancel_loop_playlist()
   --M.update_display_info()
 end
 
+function M.like_current_song()
+  vim.notify("Added to Liked Songs !", vim.log.levels.INFO, { title = "Neotify" })
+  shell "spotify_player like"
+  M.update_display_info()
+end
+
+function M.unlike_current_song()
+  vim.notify("Unliked the current song", vim.log.levels.INFO, { title = "Neotify" })
+  shell "spotify_player like -u"
+  M.update_display_info()
+end
+
 function M.manual_update_notify() M.update_display_info() end
 
 function M.setup()
@@ -93,7 +105,7 @@ function M.setup()
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>ml",
+    "<leader>mv",
     "<cmd>lua require('neotify').track_loop_playlist()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Looping Playlist" }
   )
@@ -108,6 +120,18 @@ function M.setup()
     "<leader>mi",
     "<cmd>lua require('neotify').manual_update_notify()<CR>",
     { noremap = true, silent = true, desc = "Neotify : Update Song Info" }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>ml",
+    "<cmd>lua require('neotify').like_current_song()<CR>",
+    { noremap = true, silent = true, desc = "Neotify : Liking the current song" }
+  )
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>mu",
+    "<cmd>lua require('neotify').unlike_current_song()<CR>",
+    { noremap = true, silent = true, desc = "Neotify : Unliking the current song" }
   )
   --M.update_display_info()
   --vim.notify("Neotify setup complete, Initial song info fetched.", vim.log.levels.INFO, { title = "Neotify" })
