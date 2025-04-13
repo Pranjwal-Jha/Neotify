@@ -1,6 +1,7 @@
 local M = {}
 
 local current_string_status = ""
+local loop_status_string = "No Loop"
 
 local function shell(cmd)
   local handle = io.popen(cmd .. " 2>/dev/null")
@@ -19,7 +20,7 @@ local function shell(cmd)
 end
 
 function M.get_current_song_info()
-  local cmd = "playerctl --player=spotifyd metadata --format '{{title}} - {{artist}}'"
+  local cmd = "playerctl --player=spotify metadata --format '{{title}} - {{artist}}'"
   local info = shell(cmd)
   return info
 end
@@ -42,31 +43,33 @@ end
 
 function M.play_pause()
   vim.notify("Toggling Play/Pause", vim.log.levels.INFO, { title = "Neotify" })
-  shell "playerctl --player=spotifyd play-pause"
+  shell "playerctl --player=spotify play-pause"
   M.update_display_info()
 end
 
 function M.next_track()
   vim.notify("Skipping to Next Track", vim.log.levels.INFO, { title = "Neotify" })
-  shell "playerctl --player=spotifyd next"
+  shell "playerctl --player=spotify next"
   vim.defer_fn(function() M.update_display_info() end, 1500)
 end
 
 function M.previous_track()
   vim.notify("Going to Previous Track", vim.log.levels.INFO, { title = "Neotify" })
-  shell "playerctl --player=spotifyd previous"
+  shell "playerctl --player=spotify previous"
   vim.defer_fn(function() M.update_display_info() end, 1500)
 end
 
 function M.track_loop_playlist()
-  vim.notify("Looping the current playlist", vim.log.levels.INFO, { title = "Neotify" })
-  shell "playerctl --player=spotifyd loop playlist"
+  vim.notify("Looping the current song", vim.log.levels.INFO, { title = "Neotify" })
+  shell "playerctl --player=spotify loop Track"
+  loop_status_string = "Looping Current Song"
   --M.update_display_info()
 end
 
 function M.cancel_loop_playlist()
   vim.notify("Looping Stopped", vim.log.levels.INFO, { title = "Neotify" })
-  shell "playerctl --player=spotifyd loop none"
+  shell "playerctl --player=spotify loop none"
+  loop_status_string = "No Loop"
   --M.update_display_info()
 end
 
@@ -82,7 +85,10 @@ function M.unlike_current_song()
   M.update_display_info()
 end
 
-function M.manual_update_notify() M.update_display_info() end
+function M.manual_update_notify()
+  vim.notify(loop_status_string, vim.log.levels.INFO, { title = "Looping Status" })
+  M.update_display_info()
+end
 
 function M.setup()
   vim.api.nvim_set_keymap(
@@ -105,9 +111,9 @@ function M.setup()
   )
   vim.api.nvim_set_keymap(
     "n",
-    "<leader>mv",
+    "<leader>mt",
     "<cmd>lua require('neotify').track_loop_playlist()<CR>",
-    { noremap = true, silent = true, desc = "Neotify : Looping Playlist" }
+    { noremap = true, silent = true, desc = "Neotify : Looping Track" }
   )
   vim.api.nvim_set_keymap(
     "n",
